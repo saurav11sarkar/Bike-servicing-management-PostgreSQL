@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.customerController = void 0;
+const pick_1 = __importDefault(require("../../../shared/pick"));
 const catchAsycn_1 = __importDefault(require("../../utils/catchAsycn"));
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const customer_service_1 = require("./customer.service");
@@ -21,8 +22,10 @@ const createCustomer = (0, catchAsycn_1.default)((req, res) => __awaiter(void 0,
     (0, sendResponse_1.default)(res, 201, "Customer created successfully", result);
 }));
 const getAllCustomer = (0, catchAsycn_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield customer_service_1.customerService.getAllCustomer();
-    (0, sendResponse_1.default)(res, 200, "Customers fetched successfully", result);
+    const filter = (0, pick_1.default)(req.query, ["name", "email", "phone", "searchTerm"]);
+    const option = (0, pick_1.default)(req.query, ["page", "limit", "sortBy", "sortOrder"]);
+    const result = yield customer_service_1.customerService.getAllCustomer(filter, option);
+    (0, sendResponse_1.default)(res, 200, "Customers fetched successfully", result.data, result.meta);
 }));
 const customerById = (0, catchAsycn_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield customer_service_1.customerService.customerById(req.params.id);
